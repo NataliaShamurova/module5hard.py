@@ -33,21 +33,17 @@ class UrTube:
             if i.nickname == nickname and i.password == passw_hash:
                 self.current_user = i
                 return self.current_user
-            print('Неверный логин или пароль')
+        print('Неверный логин или пароль')
 
     def log_out(self):
         self.current_user = None
 
     def add(self, *videos):
+        existing_titles = {video.title for video in self.videos}
         for video in videos:
-            exists = False
-            for v in self.videos:
-                if v.title == video.title:
-                    exists = True
-                    break
-            if not exists:
+            if video.title not in existing_titles:
                 self.videos.append(video)
-
+                existing_titles.add(video.title)
     def get_videos(self, word_search: str):
         word_search_lower = word_search.lower()
         video_list = []
@@ -87,33 +83,27 @@ class UrTube:
 
         print("Видео не найдено")
 
-user1 = User('vasya_pupkin', 'lolkekcheburek', 13)
-user2 = User('urban_pythonist', 'iScX4vIJClb9YQavjAgF', 25)
-
 ur = UrTube()
-ur.log_in('vasya_pupkin', 'lolkekcheburek')
 v1 = Video('Лучший язык программирования 2024 года', 200)
 v2 = Video('Для чего девушкам парень программист?', 10, adult_mode=True)
-v3 = Video('программа?', 10, adult_mode=True)
+
 # Добавление видео
-ur.add(v1, v2, v3)
-#
- # Проверка поиска
+ur.add(v1, v2)
+
+# Проверка поиска
 print(ur.get_videos('лучший'))
-print(ur.get_videos('?'))
-#
+print(ur.get_videos('ПРОГ'))
+
 # Проверка на вход пользователя и возрастное ограничение
 ur.watch_video('Для чего девушкам парень программист?')
 ur.register('vasya_pupkin', 'lolkekcheburek', 13)
 ur.watch_video('Для чего девушкам парень программист?')
 ur.register('urban_pythonist', 'iScX4vIJClb9YQavjAgF', 25)
 ur.watch_video('Для чего девушкам парень программист?')
-#
-# # Проверка входа в другой аккаунт
+
+# Проверка входа в другой аккаунт
 ur.register('vasya_pupkin', 'F8098FM8fjm9jmi', 55)
 print(ur.current_user)
 
-#
-# # Попытка воспроизведения несуществующего видео
+# Попытка воспроизведения несуществующего видео
 ur.watch_video('Лучший язык программирования 2024 года!')
-#
